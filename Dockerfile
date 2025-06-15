@@ -61,5 +61,5 @@ RUN npx nx build api --prod
 # 应用端口
 EXPOSE 3000
 
-# 运行数据库迁移并启动应用
-CMD npx prisma migrate deploy && node dist/api/main.js
+# 启动应用
+CMD node dist/api/main.js
