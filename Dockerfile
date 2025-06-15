@@ -8,29 +8,6 @@
 # RUN addgroup --system api && \
 #           adduser --system -G api api
 
-# # 复制必要的文件用于构建
-# COPY package.json package-lock.json* ./
-
-# # 安装依赖并生成Prisma客户端
-# RUN npm install
-# # 必须先复制prisma相关文件
-# COPY src/prisma/schema.prisma ./src/prisma/
-# RUN npx prisma generate
-
-# # 复制源代码
-# COPY . .
-
-# # 构建应用
-# RUN npm run build
-
-# RUN chown -R api:api .
-
-# # 安装生产依赖
-# # RUN npm --prefix api --omit=dev -f install
-
-# CMD [ "node", "api" ]
-
-
 # 使用官方Node.js镜像作为基础镜像
 FROM node:18-alpine
 

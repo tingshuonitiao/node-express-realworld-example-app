@@ -1,13 +1,14 @@
--- 这是一个空的PostgreSQL初始化脚本
--- 可以根据需要添加表结构或初始数据
+-- -- 创建用户 (如果不存在)
+-- CREATE USER user0 WITH PASSWORD '123456';
 
--- 示例：创建表（取消注释后使用）
--- CREATE TABLE IF NOT EXISTS users (
---     id SERIAL PRIMARY KEY,
---     username VARCHAR(50) UNIQUE NOT NULL,
---     email VARCHAR(100) UNIQUE NOT NULL
--- );
+-- -- 创建数据库并设置所有者
+-- CREATE DATABASE realworld WITH OWNER = user0 ENCODING = 'UTF8';
 
--- 示例：插入初始数据（取消注释后使用）
--- INSERT INTO users (username, email) VALUES
--- ('admin', 'admin@example.com');
+-- -- 授予用户所有权限
+-- GRANT ALL PRIVILEGES ON DATABASE realworld TO user0;
+
+-- -- 授予用户对public schema的所有权限
+-- \c realworld
+-- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO user0;
+-- GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO user0;
+-- GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO user0;
