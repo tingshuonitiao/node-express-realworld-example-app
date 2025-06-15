@@ -34,6 +34,9 @@
 # 使用官方Node.js镜像作为基础镜像
 FROM node:18-alpine
 
+# 安装必要的依赖
+RUN apk add --no-cache openssl
+
 # 设置工作目录
 WORKDIR /app
 
