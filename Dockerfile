@@ -31,6 +31,7 @@ RUN npm ci
 
 COPY src/prisma/ ./src/prisma/
 RUN rm -rf node_modules/.prisma && npx prisma generate
+RUN npx prisma migrate deploy
 
 # 复制源代码
 COPY . .
