@@ -181,3 +181,16 @@ export const updateUser = async (userPayload: any, id: number) => {
     token: generateToken(user.id),
   };
 };
+
+// 添加一个新的服务方法
+export const getAllUsers = async () => {
+  return await prisma.user.findMany({
+    select: {
+      id: true,
+      email: true,
+      username: true,
+      bio: true,
+      image: true
+    }
+  });
+}

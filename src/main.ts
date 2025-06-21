@@ -1,12 +1,14 @@
 import { config } from 'dotenv';
 import path from 'path';
+import logger from './logger';
+
 
 // 必须最先执行！使用绝对路径确保可靠性
 config({ path: path.join(__dirname, '../.env') });
 
 // 添加环境变量验证
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL is missing in .env');
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET is missing in .env');
 }
 
 import express from 'express';
@@ -15,7 +17,15 @@ import * as bodyParser from 'body-parser';
 import routes from './app/routes/routes';
 import HttpException from './app/models/http-exception.model';
 
+logger.info('=== 启动测试日志 ===');
+logger.warn('测试警告级别日志');
+logger.error('测试错误级别日志');
+logger.debug('测试调试级别日志'); 
+logger.error(`JWT_SECRET in main.ts is: ${process.env.JWT_SECRET}`); 
+
 config({ path: __dirname + '/../.env' }); 
+// 在app初始化前添加时区设置
+process.env.TZ = 'Asia/Shanghai'; // 设置为北京时间
 const app = express();
 
 /**
@@ -44,6 +54,15 @@ app.use(
   ) => {
     // @ts-ignore
     if (err && err.name === 'UnauthorizedError') {
+    logger.error('JWT验证失败详情:', {
+      message: err.message,
+      stack: err.stack,
+      inner: JSON.stringify((err as any).inner) || 'N/A',
+      code: (err as any)?.code,
+      timestamp: new Date(),
+      token: req.headers.authorization?.split(' ')[1],
+      secretUsed: process.env.JWT_SECRET?.substring(0, 3) + '...'
+    });
       return res.status(401).json({
         status: 'error',
         message: 'missing authorization credentials',

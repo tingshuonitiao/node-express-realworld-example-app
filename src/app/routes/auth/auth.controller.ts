@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import auth from './auth';
-import { createUser, getCurrentUser, login, updateUser } from './auth.service';
+// 在现有import中添加
+import { createUser, getCurrentUser, login, updateUser, getAllUsers } from './auth.service';
+import jwt from 'jsonwebtoken';
 
 const router = Router();
 
@@ -65,6 +67,29 @@ router.put('/user', auth.required, async (req: Request, res: Response, next: Nex
   } catch (error) {
     next(error);
   }
+});
+
+// 添加新路由（建议加权限控制）
+router.get('/users', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const users = await getAllUsers();
+    res.json({ users });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/verify-token', (req, res) => {
+  const testPayload = { test: 'validation' };
+  const testToken = jwt.sign(testPayload, process.env.JWT_SECRET, {
+    expiresIn: '1h' // 添加1小时过期时间
+  });
+  const decoded = jwt.verify(testToken, process.env.JWT_SECRET);
+  res.json({ 
+    generated: testToken,
+    verified: decoded,
+    expiresIn: '1h' // 返回过期时间配置
+  });
 });
 
 export default router;

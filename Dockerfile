@@ -17,6 +17,10 @@ RUN apk add --no-cache openssl
 # 设置工作目录
 WORKDIR /app
 
+# 在现有基础上添加日志目录和PM2支持
+RUN mkdir -p /app/logs && chown node:node /app/logs
+VOLUME /app/logs
+
 # 复制package.json和package-lock.json(或yarn.lock)
 COPY package*.json .
 COPY .env .
@@ -33,6 +37,9 @@ COPY src/prisma/ ./src/prisma/
 RUN rm -rf node_modules/.prisma && npx prisma generate
 RUN npx prisma migrate deploy
 
+# 安装PM2
+RUN npm install pm2 -g
+
 # 复制源代码
 COPY . .
 
@@ -42,5 +49,5 @@ RUN npx nx build api --prod
 # 应用端口
 EXPOSE 3000
 
-# 启动应用
-CMD node dist/api/main.js
+# 修改启动命令（替换最后一行CMD）
+CMD ["pm2-runtime", "dist/api/main.js", "--log", "/app/logs/app.log"]
