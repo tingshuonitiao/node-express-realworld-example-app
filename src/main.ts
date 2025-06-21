@@ -1,21 +1,11 @@
-import { config } from 'dotenv';
-import path from 'path';
-
-// 必须最先执行！使用绝对路径确保可靠性
-config({ path: path.join(__dirname, '../.env') });
-
-// 添加环境变量验证
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL is missing in .env');
-}
-
+import logger from './logger';
 import express from 'express';
 import cors from 'cors';
 import * as bodyParser from 'body-parser';
 import routes from './app/routes/routes';
 import HttpException from './app/models/http-exception.model';
 
-config({ path: __dirname + '/../.env' }); 
+logger.info('=== 启动测试日志 ===');
 const app = express();
 
 /**
