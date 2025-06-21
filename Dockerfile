@@ -19,7 +19,7 @@ WORKDIR /app
 
 # 复制package.json和package-lock.json(或yarn.lock)
 COPY package*.json .
-
+COPY .env .
 # 复制NX配置文件
 COPY nx.json .
 COPY project.json .
@@ -30,7 +30,7 @@ COPY jest.config.ts .
 RUN npm ci
 
 COPY src/prisma/ ./src/prisma/
-RUN npx prisma generate
+RUN rm -rf node_modules/.prisma && npx prisma generate
 
 # 复制源代码
 COPY . .
