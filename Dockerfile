@@ -41,16 +41,15 @@ COPY project.json .
 COPY tsconfig*.json .
 COPY jest.config.ts .
 
+RUN npm install pm2 -g
+
+RUN npm install -g nx 
+
 # 安装依赖
 RUN npm install
 COPY src/prisma/ ./src/prisma/
 RUN rm -rf node_modules/.prisma && npx prisma generate
 RUN npx prisma migrate deploy
-
-# 安装PM2
-RUN npm install pm2 -g
-
-RUN npm install -g nx 
 
 # 复制源代码
 COPY . .
