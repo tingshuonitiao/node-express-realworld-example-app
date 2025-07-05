@@ -20,17 +20,17 @@ services:
         JWT_SECRET: WmFqZ2x1c3RlckB+KiQjJV4mKigpX3s=
         NODE_ENV: production
         PORT: 3000
+    image: realworld-server  # 自定义镜像名称
     ports:
       - "3000:3000"
     restart: always
-    depends_on:
-      - realworld-db
 
   # web 服务
   realworld-web:
     build:
       # 修改 context 为 /web 项目所在目录
       context: ../react-redux-realworld-example-app
+    image: realworld-web  # 自定义镜像名称
     ports:
       - "4100:80"
     restart: always
