@@ -2,19 +2,14 @@ version: '3.8'
 
 services:
   # 数据库服务
-  realworld-db:
-    build:
-      context: .
-      dockerfile: Dockerfile.db
-    ports:
-      - "5433:5432"
-    # 新增健康检查
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user0 -d realworld"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    restart: unless-stopped
+  # 先单独构建
+  # realworld-db:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.db
+  #   ports:
+  #     - "5433:5432"
+  #   restart: always
 
   # server 服务
   realworld-server:
@@ -27,20 +22,9 @@ services:
         PORT: 3000
     ports:
       - "3000:3000"
-    restart: on-failure:5
+    restart: always
     depends_on:
-      realworld-db:
-        condition: service_healthy  # 关键依赖条件
-    # 新增等待脚本
-    command: 
-      - sh
-      - -c
-      - |
-        echo "等待数据库就绪..."
-        while ! nc -z realworld-db 5432; do 
-          sleep 2
-        done
-        pm2-runtime dist/api/main.js --log /app/logs/app.log
+      - realworld-db
 
   # web 服务
   realworld-web:
